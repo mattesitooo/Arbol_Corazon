@@ -1,367 +1,832 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Andrés &amp; Valeria</title>
-<style>
-  :root {
-    --bg: #fbeee6;
-    --text-color: #5c4436;
-    --accent-red: #e65c65;
-    --trunk: #7a482b;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Andrés ❤️ Valeria</title>
+    <style>
+        /* ===== BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: radial-gradient(ellipse at center, #2a1a3a 0%, #110a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-  * { box-sizing: border-box; }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2vh 2vw 0.8vh 2vw;
+            overflow: hidden;
+            z-index: 1;
+        }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-color: var(--bg);
-    overflow: hidden;
-    font-family: 'Georgia', 'Palatino Linotype', serif;
-    color: var(--text-color);
-  }
+        /* ===== ESTRELLAS ===== */
+        #stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
+            animation-delay: var(--del, 0s);
+            will-change: opacity;
+        }
+        @keyframes twinkle {
+            0% {
+                opacity: 0.1;
+            }
+            100% {
+                opacity: 0.8;
+            }
+        }
 
-  #stage {
-    position: relative;
-    width: 100%;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6vh 20px 8vh 20px;
-  }
+        /* ===== MENSAJES ===== */
+        .messages {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 8vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 2vw;
+            flex-shrink: 0;
+        }
+        .msg-text {
+            font-size: clamp(2.6vw, 3.8vh, 5vw);
+            font-weight: 500;
+            color: #f2e6f0;
+            letter-spacing: 0.02em;
+            line-height: 1.3;
+            transition: opacity 0.8s ease;
+            opacity: 1;
+            text-shadow: 0 0 30px rgba(231, 180, 99, 0.15);
+            word-break: break-word;
+            position: absolute;
+        }
+        .msg-text .gold {
+            color: #e7b463;
+            font-weight: 600;
+        }
+        .msg-text.fade-out {
+            opacity: 0;
+        }
 
-  /* --- Mensajes --- */
-  #messageBox {
-    min-height: 4.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    max-width: 320px;
-  }
+        /* ===== ÁRBOL ===== */
+        .tree-wrapper {
+            position: relative;
+            flex: 1 1 auto;
+            width: 100%;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            margin: 0.2vh 0;
+        }
+        .tree {
+            position: relative;
+            width: min(78vw, 76vh);
+            aspect-ratio: 1 / 1.25;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
 
-  #messageBox p {
-    position: absolute;
-    font-size: 1.15rem;
-    line-height: 1.5;
-    color: var(--text-color);
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 1s ease, transform 1s ease;
-    margin: 0;
-  }
+        /* TRONCO Y RAMAS (SVG) */
+        .tree-svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+            animation: sway 6.5s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+        @keyframes sway {
+            0%,
+            100% {
+                transform: rotate(-1.2deg);
+            }
+            50% {
+                transform: rotate(1.2deg);
+            }
+        }
+        .tree-svg path {
+            fill: #5a3a22;
+            stroke: #3d2615;
+            stroke-width: 1.8;
+            stroke-linejoin: round;
+        }
+        .tree-svg .branch-light {
+            fill: #6f4a2e;
+            stroke: #4d311c;
+            stroke-width: 1.2;
+        }
 
-  #messageBox p.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
+        /* ===== COPA (corazones) ===== */
+        .canopy {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: visible;
+        }
 
-  /* --- Árbol y Follaje --- */
-  #treeWrap {
-    position: relative;
-    width: min(85vw, 360px);
-    height: 44vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-  }
+        .heart-leaf {
+            position: absolute;
+            transform-origin: center center;
+            will-change: transform;
+            pointer-events: none;
+        }
+        .heart-leaf .heart-inner {
+            display: block;
+            animation: breathe var(--breath-dur, 5s) ease-in-out infinite alternate;
+            animation-delay: var(--breath-del, 0s);
+            transform-origin: center center;
+        }
+        .heart-leaf svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+        }
+        @keyframes breathe {
+            0% {
+                transform: translateY(-3px) rotate(-4deg) scale(0.95);
+            }
+            100% {
+                transform: translateY(3px) rotate(4deg) scale(1.08);
+            }
+        }
 
-  #branchesSvg {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* Ramas detrás de las hojas */
-    pointer-events: none;
-  }
+        /* ===== CORAZONES CAYENDO ===== */
+        .falling-heart {
+            position: fixed;
+            z-index: 20;
+            width: 28px;
+            height: 28px;
+            pointer-events: none;
+            will-change: transform;
+            opacity: 0.9;
+        }
+        .falling-heart svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+        }
 
-  #trunk {
-    position: absolute;
-    bottom: 0;
-    width: 16px;
-    height: 38%;
-    background: linear-gradient(180deg, #935a37, var(--trunk));
-    border-radius: 8px 8px 12px 12px;
-    z-index: 1;
-  }
+        /* ===== OSITO ===== */
+        .bear {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 6;
+            font-size: clamp(5.5vw, 7vh, 9vw);
+            display: flex;
+            align-items: center;
+            gap: 0.4vw;
+            animation: bear-breathe 3.8s ease-in-out infinite alternate;
+            filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4));
+            text-shadow: 0 2px 15px rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .bear .bear-heart {
+            font-size: 0.7em;
+            animation: heart-pulse 1.6s ease-in-out infinite;
+        }
+        @keyframes bear-breathe {
+            0% {
+                transform: translateX(-50%) scale(0.96);
+            }
+            100% {
+                transform: translateX(-50%) scale(1.04);
+            }
+        }
+        @keyframes heart-pulse {
+            0%,
+            100% {
+                transform: scale(0.85);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
 
-  #canopy {
-    position: absolute;
-    bottom: 22%;
-    width: 100%;
-    height: 78%;
-    z-index: 2; /* Follaje por encima de las ramas */
-  }
+        /* ===== CONTADOR ===== */
+        .counter {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            flex-shrink: 0;
+            min-height: 14vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.2vh 0;
+            gap: 0.4vh;
+        }
+        .counter-label {
+            font-size: clamp(2.4vw, 2.8vh, 3.8vw);
+            color: #e7b463;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 25px rgba(231, 180, 99, 0.2);
+            text-align: center;
+        }
+        .counter-cards {
+            display: flex;
+            gap: clamp(1.5vw, 1.8vh, 2.8vw);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: clamp(10px, 2vh, 20px);
+            padding: 0.4vh 1.2vw;
+            min-width: 12vw;
+            text-align: center;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+        }
+        .card .number {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(4.2vw, 5.2vh, 7vw);
+            font-weight: 700;
+            color: #f2e6f0;
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.06);
+        }
+        .card .label {
+            font-size: clamp(1.6vw, 1.6vh, 2.4vw);
+            color: rgba(255, 255, 255, 0.55);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.2vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
 
-  /* Mecánica móvil de las hojas */
-  .heart {
-    position: absolute;
-    transform-origin: center;
-    animation: swayAndPulse 3.5s ease-in-out infinite alternate;
-    will-change: transform;
-  }
+        /* ===== FIRMA ===== */
+        .footer {
+            position: relative;
+            z-index: 10;
+            flex-shrink: 0;
+            min-height: 3.5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.2vh 0;
+        }
+        .footer span {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+            font-size: clamp(2.4vw, 3vh, 4vw);
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+            letter-spacing: 0.12em;
+        }
 
-  @keyframes swayAndPulse {
-    0% {
-      transform: scale(1) rotate(var(--r, 0deg)) translate(0, 0);
-    }
-    50% {
-      transform: scale(1.08) rotate(calc(var(--r, 0deg) + 4deg)) translate(var(--dx, 2px), var(--dy, -2px));
-    }
-    100% {
-      transform: scale(0.95) rotate(calc(var(--r, 0deg) - 4deg)) translate(calc(var(--dx, 2px) * -1), calc(var(--dy, -2px) * -1));
-    }
-  }
-
-  .bears {
-    position: absolute;
-    right: 10%;
-    bottom: -2px;
-    font-size: 2rem;
-    user-select: none;
-    z-index: 3;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-  }
-
-  /* --- Contador --- */
-  #counterWrap {
-    text-align: center;
-    max-width: 320px;
-  }
-
-  #counterLabel {
-    font-size: 0.95rem;
-    color: #8c7365;
-    margin-bottom: 6px;
-  }
-
-  #counterText {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--text-color);
-    line-height: 1.4;
-  }
-
-  /* Fondo */
-  .bg-heart {
-    position: absolute;
-    opacity: 0.25;
-    pointer-events: none;
-    animation: floatUp linear infinite;
-  }
-
-  @keyframes floatUp {
-    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-    20% { opacity: 0.35; }
-    80% { opacity: 0.35; }
-    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-  }
-</style>
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.8vh 2vw 0.4vh 2vw;
+            }
+            .messages {
+                min-height: 7vh;
+            }
+            .msg-text {
+                font-size: clamp(3vw, 3.2vh, 4.5vw);
+            }
+            .tree {
+                width: min(82vw, 70vh);
+                aspect-ratio: 1 / 1.25;
+            }
+            .counter {
+                min-height: 13vh;
+            }
+            .card {
+                padding: 0.3vh 1.5vw;
+                min-width: 14vw;
+            }
+            .card .number {
+                font-size: clamp(4.8vw, 4.8vh, 6.8vw);
+            }
+            .card .label {
+                font-size: clamp(1.8vw, 1.4vh, 2.2vw);
+            }
+            .bear {
+                font-size: clamp(6vw, 8vh, 11vw);
+                bottom: 3%;
+            }
+            .footer span {
+                font-size: clamp(2.8vw, 2.6vh, 4.2vw);
+            }
+        }
+        @media (max-width: 380px) {
+            .counter-cards {
+                gap: 1.2vw;
+            }
+            .card {
+                min-width: 16vw;
+                padding: 0.2vh 0.8vw;
+            }
+            .card .number {
+                font-size: clamp(5vw, 4.2vh, 6.2vw);
+            }
+        }
+    </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute">
-  <defs>
-    <symbol id="heartPath" viewBox="0 0 32 29">
-      <path d="M16 28.5C16 28.5 1 19.3 1 9.7C1 4.9 4.7 1 9.3 1C12.2 1 14.7 2.5 16 4.8C17.3 2.5 19.8 1 22.7 1C27.3 1 31 4.9 31 9.7C31 19.3 16 28.5 16 28.5Z"/>
-    </symbol>
-  </defs>
-</svg>
+    <div class="container">
 
-<div id="stage">
-  <div id="messageBox"></div>
+        <!-- ESTRELLAS -->
+        <div id="stars"></div>
 
-  <div id="treeWrap">
-    <svg id="branchesSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
-    <div id="canopy"></div>
-    <div id="trunk"></div>
-    <div class="bears">🐻‍❄️👩‍❤️‍👨🐻</div>
-  </div>
+        <!-- MENSAJES -->
+        <div class="messages" id="messages">
+            <div class="msg-text active" id="msg0">Cada día contigo vale la pena.</div>
+            <div class="msg-text" id="msg1">Mi lugar favorito siempre será <span class="gold">donde estés vos</span>.</div>
+            <div class="msg-text" id="msg2">Andrés <span class="gold">❤️</span> Valeria, nuestra historia recién comienza.</div>
+            <div class="msg-text" id="msg3">Gracias por hacer felices mis días.</div>
+            <div class="msg-text" id="msg4">Sos mi <span class="gold">casualidad favorita</span>.</div>
+            <div class="msg-text" id="msg5">Elegiría encontrarte <span class="gold">una y mil veces</span>.</div>
+        </div>
 
-  <div id="counterWrap">
-    <div id="counterLabel">Nuestros caminos se cruzaron hace...</div>
-    <div id="counterText">0 días, 0 horas, 0 minutos y 0 segundos</div>
-  </div>
-</div>
+        <!-- ÁRBOL -->
+        <div class="tree-wrapper">
+            <div class="tree" id="tree">
 
-<script>
-// --- Corazones flotantes de fondo ---
-const stage = document.getElementById('stage');
-const bgPalette = ['#f39c12', '#e84393', '#fd79a8', '#e65c65'];
+                <!-- TRONCO + RAMAS (SVG orgánico) -->
+                <svg class="tree-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                    <!-- Tronco principal con forma orgánica -->
+                    <path d="
+                    M 38 100
+                    Q 40 86, 42 74
+                    Q 44 62, 46 54
+                    Q 47 48, 48 44
+                    Q 49 40, 50 36
+                    Q 51 40, 52 44
+                    Q 53 48, 54 54
+                    Q 56 62, 58 74
+                    Q 60 86, 62 100
+                    Z
+                    "/>
+                    <!-- Rama izquierda principal -->
+                    <path class="branch-light" d="
+                    M 46 54
+                    Q 38 48, 28 40
+                    Q 20 34, 14 26
+                    Q 10 20, 8 12
+                    Q 14 18, 22 24
+                    Q 32 34, 42 44
+                    Z
+                    "/>
+                    <!-- Rama derecha principal -->
+                    <path class="branch-light" d="
+                    M 54 54
+                    Q 62 48, 72 40
+                    Q 80 34, 86 26
+                    Q 90 20, 92 12
+                    Q 86 18, 78 24
+                    Q 68 34, 58 44
+                    Z
+                    "/>
+                    <!-- Ramas secundarias izquierdas -->
+                    <path class="branch-light" d="
+                    M 42 62
+                    Q 32 56, 24 48
+                    Q 28 52, 36 58
+                    Z
+                    "/>
+                    <path class="branch-light" d="
+                    M 44 70
+                    Q 34 66, 26 60
+                    Q 30 64, 38 68
+                    Z
+                    "/>
+                    <!-- Ramas secundarias derechas -->
+                    <path class="branch-light" d="
+                    M 58 62
+                    Q 68 56, 76 48
+                    Q 72 52, 64 58
+                    Z
+                    "/>
+                    <path class="branch-light" d="
+                    M 56 70
+                    Q 66 66, 74 60
+                    Q 70 64, 62 68
+                    Z
+                    "/>
+                    <!-- Pequeñas ramitas superiores -->
+                    <path class="branch-light" d="
+                    M 48 44
+                    Q 44 36, 38 30
+                    Q 42 34, 46 40
+                    Z
+                    "/>
+                    <path class="branch-light" d="
+                    M 52 44
+                    Q 56 36, 62 30
+                    Q 58 34, 54 40
+                    Z
+                    "/>
+                </svg>
 
-for (let i = 0; i < 12; i++) {
-  const h = document.createElement('div');
-  h.className = 'bg-heart';
-  const size = Math.random() * 16 + 10;
-  h.style.width = size + 'px';
-  h.style.height = (size * 29 / 32) + 'px';
-  h.style.left = Math.random() * 100 + '%';
-  h.style.animationDuration = (Math.random() * 8 + 6) + 's';
-  h.style.animationDelay = (Math.random() * 5) + 's';
-  
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgNS, 'svg');
-  svg.setAttribute('viewBox', '0 0 32 29');
-  const use = document.createElementNS(svgNS, 'use');
-  use.setAttribute('href', '#heartPath');
-  use.setAttribute('fill', bgPalette[Math.floor(Math.random() * bgPalette.length)]);
-  svg.appendChild(use);
-  h.appendChild(svg);
-  
-  stage.appendChild(h);
-}
+                <!-- COPA (corazones) -->
+                <div class="canopy" id="canopy"></div>
 
-// --- Geometría: Corazón Inscrito en Círculo Límite ---
-const canopy = document.getElementById('canopy');
-const treeColors = ['#e65c65', '#f19066', '#f5cd79', '#e84393', '#fd79a8', '#cf6a87'];
+                <!-- OSITO -->
+                <div class="bear" id="bear">
+                    <span>🧸</span>
+                    <span class="bear-heart">❤️</span>
+                </div>
+            </div>
+        </div>
 
-function makeHeartSvg(size, color) {
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgNS, 'svg');
-  svg.setAttribute('viewBox', '0 0 32 29');
-  svg.style.width = size + 'px';
-  svg.style.height = (size * 29 / 32) + 'px';
-  const use = document.createElementNS(svgNS, 'use');
-  use.setAttribute('href', '#heartPath');
-  use.setAttribute('fill', color);
-  svg.appendChild(use);
-  return svg;
-}
+        <!-- CONTADOR -->
+        <div class="counter">
+            <div class="counter-label">Nuestros caminos se cruzaron hace</div>
+            <div class="counter-cards" id="counterCards">
+                <div class="card"><div class="number" id="days">00</div><div class="label">Días</div></div>
+                <div class="card"><div class="number" id="hours">00</div><div class="label">Horas</div></div>
+                <div class="card"><div class="number" id="minutes">00</div><div class="label">Minutos</div></div>
+                <div class="card"><div class="number" id="seconds">00</div><div class="label">Segundos</div></div>
+            </div>
+        </div>
 
-// Paramétrica con silueta de corazón acentuada
-const samples = [];
-let maxRadius = 0;
+        <!-- FIRMA -->
+        <div class="footer">
+            <span>Andrés &amp; Valeria</span>
+        </div>
+    </div>
 
-for (let deg = 0; deg < 360; deg += 1) {
-  const t = deg * Math.PI / 180;
-  // Ecuación de corazón con muesca acentuada
-  const x = 16 * Math.pow(Math.sin(t), 3);
-  const y = 14 * Math.cos(t) - 6 * Math.cos(2*t) - 2.5 * Math.cos(3*t) - Math.cos(4*t);
-  
-  const r = Math.sqrt(x*x + y*y);
-  if (r > maxRadius) maxRadius = r; // Determinar radio del círculo circunscrito
-  samples.push({x, y});
-}
+    <script>
+        // ================================================================
+        // 1. ESTRELLAS
+        // ================================================================
+        (function createStars() {
+            const container = document.getElementById('stars');
+            const count = 100 + Math.floor(Math.random() * 21);
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = 1 + Math.random() * 3;
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const dur = 2 + Math.random() * 4;
+                const del = Math.random() * 5;
+                star.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    left:${x}%; top:${y}%;
+                    --dur:${dur}s;
+                    --del:${del}s;
+                `;
+                container.appendChild(star);
+            }
+        })();
 
-// Generación de Hojas dentro de la copa
-const totalHearts = 150;
-const canopyLeafPoints = [];
+        // ================================================================
+        // 2. MENSAJES ROTATIVOS
+        // ================================================================
+        (function messages() {
+            const msgs = document.querySelectorAll('.msg-text');
+            let idx = 0;
+            let isFading = false;
 
-for (let i = 0; i < totalHearts; i++) {
-  const pt = samples[Math.floor(Math.random() * samples.length)];
-  // Concentrar más hacia los límites exteriores para marcar la forma del corazón
-  const k = Math.pow(Math.random(), 0.35); 
-  
-  // Normalizar y circunscribir dentro del círculo unitario r <= 1
-  const xNorm = (pt.x / maxRadius) * k;
-  const yNorm = (pt.y / maxRadius) * k;
+            function showNext() {
+                if (isFading) return;
+                isFading = true;
+                const current = msgs[idx];
+                current.classList.add('fade-out');
+                setTimeout(() => {
+                    current.classList.remove('fade-out');
+                    idx = (idx + 1) % msgs.length;
+                    msgs[idx].classList.add('active');
+                    // Aseguramos que solo el activo tenga opacidad 1
+                    msgs.forEach((el, i) => {
+                        if (i !== idx) {
+                            el.classList.remove('active');
+                            el.style.opacity = '0';
+                        } else {
+                            el.classList.add('active');
+                            el.style.opacity = '1';
+                        }
+                    });
+                    isFading = false;
+                }, 800);
+            }
 
-  // Convertir a porcentajes dentro de la copa (0% a 100%)
-  const leftPct = (xNorm * 48) + 50; 
-  const topPct = (-yNorm * 48) + 48;
+            // Inicializar: solo el primero visible
+            msgs.forEach((el, i) => {
+                if (i === 0) {
+                    el.classList.add('active');
+                    el.style.opacity = '1';
+                } else {
+                    el.classList.remove('active');
+                    el.style.opacity = '0';
+                }
+            });
 
-  canopyLeafPoints.push({ x: leftPct, y: topPct });
+            setInterval(showNext, 3500);
+        })();
 
-  const h = document.createElement('div');
-  h.className = 'heart';
-  h.style.left = leftPct + '%';
-  h.style.top = topPct + '%';
-  
-  const size = 13 + Math.random() * 17;
-  const color = treeColors[Math.floor(Math.random() * treeColors.length)];
-  h.appendChild(makeHeartSvg(size, color));
+        // ================================================================
+        // 3. ÁRBOL DE CORAZONES (copa densa)
+        // ================================================================
+        (function buildCanopy() {
+            const canopy = document.getElementById('canopy');
+            const total = 240 + Math.floor(Math.random() * 60); // 240-300
+            const colors = [
+                '#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1',
+                '#c77dff', '#b5179e', '#f4a261', '#f6bd60',
+                '#e65c65', '#f19066', '#fd79a8'
+            ];
 
-  // Parámetros variados para dinámica móvil
-  h.style.setProperty('--r', (Math.random() * 30 - 15) + 'deg');
-  h.style.setProperty('--dx', (Math.random() * 6 - 3) + 'px');
-  h.style.setProperty('--dy', (Math.random() * 6 - 3) + 'px');
-  h.style.animationDuration = (2.5 + Math.random() * 2) + 's';
-  h.style.animationDelay = (Math.random() * 2) + 's';
-  
-  canopy.appendChild(h);
-}
+            // Ecuación paramétrica clásica del corazón (más marcada)
+            function heartX(t) { return 16 * Math.pow(Math.sin(t), 3); }
 
-// --- Generación Dinámica de Ramas Orgánicas (Detrás de las hojas) ---
-const svgNS = "http://www.w3.org/2000/svg";
-const branchesSvg = document.getElementById('branchesSvg');
+            function heartY(t) {
+                return 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+            }
 
-function createBranch(startX, startY, endX, endY, startWidth, endWidth, ctrlX, ctrlY) {
-  const path = document.createElementNS(svgNS, 'path');
-  const d = `M ${startX} ${startY} Q ${ctrlX} ${ctrlY} ${endX} ${endY}`;
-  path.setAttribute('d', d);
-  path.setAttribute('stroke', '#7a482b');
-  path.setAttribute('stroke-width', startWidth);
-  path.setAttribute('fill', 'none');
-  path.setAttribute('stroke-linecap', 'round');
-  branchesSvg.appendChild(path);
+            // Generar muchos puntos en la curva
+            const points = [];
+            const steps = 360;
+            for (let i = 0; i < steps; i++) {
+                const t = (i / steps) * 2 * Math.PI;
+                let x = heartX(t);
+                let y = heartY(t);
+                // Aleatoriedad pequeña para espesar
+                x += (Math.random() - 0.5) * 1.8;
+                y += (Math.random() - 0.5) * 1.8;
+                points.push({ x, y });
+            }
 
-  // Muestra visual de afinamiento hacia la punta mediante gradiente o tramos si se desea
-}
+            // Encontrar el radio máximo para normalizar
+            let maxR = 0;
+            for (const p of points) {
+                const r = Math.sqrt(p.x * p.x + p.y * p.y);
+                if (r > maxR) maxR = r;
+            }
 
-// Trazar ramas principales que penetran profundamente en el follaje
-const mainBranches = [
-  { sx: 50, sy: 75, ex: 25, ey: 35, sw: 3.5, ew: 0.5, cx: 40, cy: 55 },
-  { sx: 50, sy: 75, ex: 75, ey: 35, sw: 3.5, ew: 0.5, cx: 60, cy: 55 },
-  { sx: 50, sy: 75, ex: 50, ey: 22, sw: 3.0, ew: 0.4, cx: 48, cy: 45 },
-  { sx: 42, sy: 58, ex: 18, ey: 48, sw: 2.0, ew: 0.3, cx: 28, cy: 58 },
-  { sx: 58, sy: 58, ex: 82, ey: 48, sw: 2.0, ew: 0.3, cx: 72, cy: 58 },
-  { sx: 35, sy: 45, ex: 30, ey: 18, sw: 1.5, ew: 0.2, cx: 25, cy: 30 },
-  { sx: 65, sy: 45, ex: 70, ey: 18, sw: 1.5, ew: 0.2, cx: 75, cy: 30 }
-];
+            // Escala para que ocupe ~65% del ancho del árbol
+            const containerWidth = canopy.clientWidth || window.innerWidth * 0.78;
+            const scale = (0.65 * containerWidth) / (maxR * 2);
 
-mainBranches.forEach(b => createBranch(b.sx, b.sy, b.ex, b.ey, b.sw, b.ew, b.cx, b.cy));
+            // Función para generar un corazón SVG
+            function createHeartSVG(size, color) {
+                const svgNS = 'http://www.w3.org/2000/svg';
+                const svg = document.createElementNS(svgNS, 'svg');
+                svg.setAttribute('viewBox', '0 0 32 29');
+                svg.setAttribute('width', size);
+                svg.setAttribute('height', size * (29 / 32));
+                const path = document.createElementNS(svgNS, 'path');
+                path.setAttribute('d', 'M16 28.5C16 28.5 1 19.3 1 9.7C1 4.9 4.7 1 9.3 1C12.2 1 14.7 2.5 16 4.8C17.3 2.5 19.8 1 22.7 1C27.3 1 31 4.9 31 9.7C31 19.3 16 28.5 16 28.5Z');
+                path.setAttribute('fill', color);
+                path.setAttribute('stroke', 'rgba(255,255,255,0.12)');
+                path.setAttribute('stroke-width', '0.4');
+                svg.appendChild(path);
+                return svg;
+            }
 
-// --- Mensajes ---
-const messages = [
-  "Para la persona que amo: Si pudiera elegir un lugar...",
-  "...sería a tu lado.",
-  "Gracias por hacer cada día especial, Valeria.",
-  "Te elijo hoy, mañana y siempre. ❤️"
-];
+            // Generar corazones con distribución que resalta la forma
+            // Tomamos puntos de la curva y los expandimos ligeramente hacia fuera
+            const usedPoints = [];
+            for (let i = 0; i < total; i++) {
+                // Seleccionar un punto aleatorio de la curva
+                const base = points[Math.floor(Math.random() * points.length)];
+                // Aplicar un factor de escala aleatorio para rellenar el interior
+                const scaleFactor = 0.3 + Math.random() * 0.7; // 0.3 - 1.0
+                const x = base.x * scaleFactor;
+                const y = base.y * scaleFactor;
 
-const box = document.getElementById('messageBox');
-const ps = messages.map(m => {
-  const p = document.createElement('p');
-  p.innerHTML = m;
-  box.appendChild(p);
-  return p;
-});
+                // Normalizar a porcentajes (centro en 50%, 50%)
+                const leftPct = 50 + (x / maxR) * 45;
+                const topPct = 50 - (y / maxR) * 45; // invertir Y
 
-let msgIdx = 0;
-function showMessage(i) {
-  ps.forEach((p, j) => p.classList.toggle('active', j === i));
-}
-showMessage(0);
-setInterval(() => {
-  msgIdx = (msgIdx + 1) % ps.length;
-  showMessage(msgIdx);
-}, 3800);
+                // Tamaño aleatorio
+                const size = 9 + Math.random() * 16;
+                const color = colors[Math.floor(Math.random() * colors.length)];
 
-// --- Contador ---
-const startDate = new Date(2024, 1, 15, 0, 0, 0);
+                // Contenedor
+                const div = document.createElement('div');
+                div.className = 'heart-leaf';
+                div.style.left = leftPct + '%';
+                div.style.top = topPct + '%';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.transform = `translate(-50%, -50%) rotate(${(Math.random()-0.5)*50}deg)`;
 
-function updateCounter() {
-  const now = new Date();
-  let diff = now - startDate;
-  if (diff < 0) diff = 0;
+                // Inner con animación de respiración
+                const inner = document.createElement('div');
+                inner.className = 'heart-inner';
+                const breathDur = 3.5 + Math.random() * 3.5;
+                const breathDel = Math.random() * 2.5;
+                inner.style.setProperty('--breath-dur', breathDur + 's');
+                inner.style.setProperty('--breath-del', breathDel + 's');
 
-  const secTotal = Math.floor(diff / 1000);
-  const days = Math.floor(secTotal / 86400);
-  const hours = Math.floor((secTotal % 86400) / 3600);
-  const mins = Math.floor((secTotal % 3600) / 60);
-  const secs = secTotal % 60;
+                const svg = createHeartSVG(size, color);
+                inner.appendChild(svg);
+                div.appendChild(inner);
+                canopy.appendChild(div);
+            }
 
-  document.getElementById('counterText').textContent = 
-    `${days} días, ${hours} horas, ${mins} minutos y ${secs} segundos`;
-}
-updateCounter();
-setInterval(updateCounter, 1000);
-</script>
+            // Añadir algunos corazones más en los bordes para definir mejor la silueta
+            for (let i = 0; i < 40; i++) {
+                const t = (i / 40) * 2 * Math.PI;
+                let x = heartX(t) * (0.95 + Math.random() * 0.1);
+                let y = heartY(t) * (0.95 + Math.random() * 0.1);
+                const leftPct = 50 + (x / maxR) * 45;
+                const topPct = 50 - (y / maxR) * 45;
+                const size = 10 + Math.random() * 14;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const div = document.createElement('div');
+                div.className = 'heart-leaf';
+                div.style.left = leftPct + '%';
+                div.style.top = topPct + '%';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.transform = `translate(-50%, -50%) rotate(${(Math.random()-0.5)*40}deg)`;
+                const inner = document.createElement('div');
+                inner.className = 'heart-inner';
+                const breathDur = 3.5 + Math.random() * 3.5;
+                const breathDel = Math.random() * 2.5;
+                inner.style.setProperty('--breath-dur', breathDur + 's');
+                inner.style.setProperty('--breath-del', breathDel + 's');
+                const svg = createHeartSVG(size, color);
+                inner.appendChild(svg);
+                div.appendChild(inner);
+                canopy.appendChild(div);
+            }
+        })();
+
+        // ================================================================
+        // 4. CORAZONES CAYENDO
+        // ================================================================
+        (function fallingHearts() {
+            const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1', '#c77dff', '#b5179e', '#f4a261', '#f6bd60'];
+            const maxSim = 3;
+            let active = [];
+
+            function createHeartSVG(size, color) {
+                const ns = 'http://www.w3.org/2000/svg';
+                const svg = document.createElementNS(ns, 'svg');
+                svg.setAttribute('viewBox', '0 0 32 29');
+                svg.setAttribute('width', size);
+                svg.setAttribute('height', size * (29 / 32));
+                const path = document.createElementNS(ns, 'path');
+                path.setAttribute('d', 'M16 28.5C16 28.5 1 19.3 1 9.7C1 4.9 4.7 1 9.3 1C12.2 1 14.7 2.5 16 4.8C17.3 2.5 19.8 1 22.7 1C27.3 1 31 4.9 31 9.7C31 19.3 16 28.5 16 28.5Z');
+                path.setAttribute('fill', color);
+                path.setAttribute('stroke', 'rgba(255,255,255,0.2)');
+                path.setAttribute('stroke-width', '0.5');
+                svg.appendChild(path);
+                return svg;
+            }
+
+            function spawn() {
+                if (active.length >= maxSim) return;
+                const el = document.createElement('div');
+                el.className = 'falling-heart';
+                const size = 22 + Math.random() * 28;
+                const x = Math.random() * 85 + 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const rot = (Math.random() - 0.5) * 70;
+                el.style.left = x + '%';
+                el.style.top = '-10px';
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
+                el.style.transform = `rotate(${rot}deg)`;
+                const svg = createHeartSVG(size, color);
+                el.appendChild(svg);
+                document.body.appendChild(el);
+
+                let y = -size;
+                let rotation = rot;
+                let phase = Math.random() * 100;
+                const speed = 0.6 + Math.random() * 0.9;
+                const wobble = 1.0 + Math.random() * 2.5;
+                const freq = 0.02 + Math.random() * 0.03;
+                const maxY = window.innerHeight + size + 30;
+                const startX = parseFloat(el.style.left);
+
+                const state = { el, y, rotation, phase, speed, wobble, freq, startX, maxY, alive: true };
+                active.push(state);
+
+                function animate() {
+                    if (!state.alive) return;
+                    state.y += state.speed * 1.3;
+                    state.phase += state.freq;
+                    state.rotation += 0.3 + Math.random() * 0.2;
+                    const wobX = Math.sin(state.phase) * state.wobble;
+                    const xPos = state.startX + wobX;
+                    state.el.style.top = state.y + 'px';
+                    state.el.style.left = xPos + '%';
+                    state.el.style.transform = `rotate(${state.rotation}deg)`;
+
+                    if (state.y > state.maxY) {
+                        state.alive = false;
+                        state.el.remove();
+                        const idx = active.indexOf(state);
+                        if (idx > -1) active.splice(idx, 1);
+                        return;
+                    }
+                    requestAnimationFrame(animate);
+                }
+                requestAnimationFrame(animate);
+            }
+
+            setInterval(() => {
+                if (active.length < maxSim && Math.random() < 0.6) spawn();
+            }, 2800 + Math.random() * 3000);
+
+            setTimeout(() => {
+                for (let i = 0; i < 2; i++) setTimeout(spawn, i * 1200 + 500);
+            }, 1500);
+        })();
+
+        // ================================================================
+        // 5. CONTADOR
+        // ================================================================
+        (function counter() {
+            const startDate = new Date(2026, 1, 15, 0, 0, 0);
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+
+            function update() {
+                const now = new Date();
+                const diff = now - startDate;
+                if (diff < 0) {
+                    daysEl.textContent = '00';
+                    hoursEl.textContent = '00';
+                    minutesEl.textContent = '00';
+                    secondsEl.textContent = '00';
+                    return;
+                }
+                const totalSec = Math.floor(diff / 1000);
+                const days = Math.floor(totalSec / 86400);
+                const hours = Math.floor((totalSec % 86400) / 3600);
+                const mins = Math.floor((totalSec % 3600) / 60);
+                const secs = totalSec % 60;
+                daysEl.textContent = pad(days);
+                hoursEl.textContent = pad(hours);
+                minutesEl.textContent = pad(mins);
+                secondsEl.textContent = pad(secs);
+            }
+            update();
+            setInterval(update, 1000);
+        })();
+
+        // ================================================================
+        // 6. Ajuste responsive: forzar reflow
+        // ================================================================
+        window.addEventListener('load', function() {
+            // Pequeño ajuste para asegurar que la copa se posicione bien
+        });
+    </script>
 </body>
 </html>
