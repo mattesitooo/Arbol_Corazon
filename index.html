@@ -190,8 +190,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 120%;
+            height: 120%;
             z-index: 2;
             pointer-events: none;
             overflow: visible;
@@ -612,7 +612,7 @@
         // ================================================================
         (function buildCanopy() {
             const canopy = document.getElementById('canopy');
-            const total = 240 + Math.floor(Math.random() * 60); // 240-300
+            const total = 400 + Math.floor(Math.random() * 60); // 240-300
             const colors = [
                 '#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1',
                 '#c77dff', '#b5179e', '#f4a261', '#f6bd60',
@@ -634,8 +634,8 @@
                 let x = heartX(t);
                 let y = heartY(t);
                 // Aleatoriedad pequeña para espesar
-                x += (Math.random() - 0.5) * 1.8;
-                y += (Math.random() - 0.5) * 1.8;
+                x += (Math.random() - 0.5) * 1.7;
+                y += (Math.random() - 0.5) * 1.7;
                 points.push({ x, y });
             }
 
@@ -648,7 +648,7 @@
 
             // Escala para que ocupe ~65% del ancho del árbol
             const containerWidth = canopy.clientWidth || window.innerWidth * 0.78;
-            const scale = (0.65 * containerWidth) / (maxR * 2);
+            const scale = (0.85 * containerWidth) / (maxR * 2);
 
             // Función para generar un corazón SVG
             function createHeartSVG(size, color) {
@@ -825,7 +825,7 @@
         // 5. CONTADOR
         // ================================================================
         (function counter() {
-            const startDate = new Date(2026, 1, 15, 0, 0, 0);
+            const startDate = new Date(2026, 2, 15, 0, 0, 0);
             const daysEl = document.getElementById('days');
             const hoursEl = document.getElementById('hours');
             const minutesEl = document.getElementById('minutes');
