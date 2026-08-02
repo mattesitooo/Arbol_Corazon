@@ -1,559 +1,10 @@
-<!DOCTYPE html><!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Andrés ❤️ Valeria</title>
-    <!-- Fuentes para la tipografía elegante y los números digitales -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
-    <style>
-        /* ===== STREAMING_CHUNK: Setup y Base ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Playfair Display', serif;
-            /* Fondo nocturno mágico (violeta muy oscuro a negro) */
-            background: radial-gradient(ellipse at bottom, #2b1342 0%, #150624 40%, #07010f 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-        }
-
-        .container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            max-width: 100%;
-            max-height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4vh 2vw;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        /* ===== STREAMING_CHUNK: Estrellas de Fondo ===== */
-        #stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .star {
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
-            animation-delay: var(--del, 0s);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* ===== STREAMING_CHUNK: Mensajes y Divisores ===== */
-        .header-section {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-top: 2vh;
-        }
-        .messages {
-            position: relative;
-            width: 100%;
-            min-height: 4vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .msg-text {
-            font-size: clamp(1.2rem, 3.5vh, 2rem);
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: opacity 1s ease;
-            opacity: 0;
-            position: absolute;
-            width: 90%;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-        .msg-text.active { opacity: 1; }
-        .msg-text.fade-out { opacity: 0; }
-        
-        .gold {
-            color: #ffce70;
-            font-weight: 600;
-            text-shadow: 0 0 15px rgba(255, 206, 112, 0.4);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 1.5vh;
-            opacity: 0.8;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            width: 40px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #ffce70);
-        }
-        .divider::after {
-            background: linear-gradient(-90deg, transparent, #ffce70);
-        }
-        .divider svg {
-            fill: #ffce70;
-            width: 12px;
-            height: 12px;
-        }
-
-        /* ===== STREAMING_CHUNK: Árbol y Follaje ===== */
-        .tree-wrapper {
-            position: relative;
-            flex: 1;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            margin: 2vh 0;
-        }
-        
-        /* Suelo sutil bajo el árbol */
-        .ground {
-            position: absolute;
-            bottom: 8%;
-            width: 60vw;
-            height: 20px;
-            background: radial-gradient(ellipse at center, rgba(30, 10, 40, 0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            filter: blur(4px);
-            z-index: 0;
-        }
-
-        .tree {
-            position: relative;
-            width: min(85vw, 450px);
-            aspect-ratio: 1 / 1.15;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        /* Tronco Oscuro y Sólido */
-        .tree-svg {
-            position: absolute;
-            bottom: 10%;
-            left: 0;
-            width: 100%;
-            height: 90%;
-            z-index: 1;
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
-        }
-        .tree-svg path {
-            fill: #1a0b12; /* Color muy oscuro, casi negro, silueta */
-            stroke: #2a121d;
-            stroke-width: 0.5;
-        }
-
-        /* Follaje (Canopy) denso y brillante */
-        .canopy {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            pointer-events: none;
-            /* Resplandor general de la copa */
-            filter: drop-shadow(0 0 25px rgba(255, 105, 180, 0.3)); 
-        }
-
-        .heart-leaf {
-            position: absolute;
-            transform-origin: center center;
-            will-change: transform;
-        }
-        .heart-leaf .heart-inner {
-            display: block;
-            animation: breathe var(--breath-dur, 4s) ease-in-out infinite alternate;
-            animation-delay: var(--breath-del, 0s);
-        }
-        .heart-leaf svg {
-            display: block;
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-        @keyframes breathe {
-            0% { transform: scale(0.9) rotate(-2deg); }
-            100% { transform: scale(1.1) rotate(2deg); }
-        }
-
-        /* Ositos */
-        .bear {
-            position: absolute;
-            bottom: 8%;
-            right: 25%;
-            z-index: 6;
-            font-size: clamp(1.8rem, 4vh, 2.5rem);
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-            user-select: none;
-        }
-        .bear .heart-prop {
-            color: #ff0054;
-            font-size: 0.8em;
-            transform: translateY(4px);
-            animation: heart-pulse 1.2s ease-in-out infinite;
-        }
-
-        /* ===== STREAMING_CHUNK: Contador Digital Oscuro ===== */
-        .counter-section {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2vh;
-        }
-        
-        .counter-label {
-            font-size: clamp(0.9rem, 2vh, 1.2rem);
-            color: #ffce70;
-            letter-spacing: 0.05em;
-            margin-bottom: 1.5vh;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .counter-label span { color: #ff0054; font-size: 0.8em; }
-
-        .counter-cards {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: clamp(8px, 1.5vw, 15px);
-        }
-
-        .card {
-            background: rgba(30, 15, 50, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 206, 112, 0.15);
-            border-radius: 12px;
-            padding: 1.2vh 3vw;
-            min-width: 18vw;
-            max-width: 80px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 20px rgba(200, 100, 255, 0.1);
-        }
-        
-        .card .number {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(1.5rem, 4vh, 2.2rem);
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-            line-height: 1.1;
-        }
-        
-        .card .label {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(0.55rem, 1.2vh, 0.8rem);
-            color: #ffce70;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 6px;
-        }
-
-        /* Puntos separadores del contador */
-        .dot-separator {
-            color: #ffce70;
-            font-size: 1.5rem;
-            line-height: 0;
-            text-shadow: 0 0 10px rgba(255, 206, 112, 0.8);
-            transform: translateY(-8px);
-        }
-
-        /* ===== STREAMING_CHUNK: Footer ===== */
-        .footer {
-            text-align: center;
-            margin-top: 1vh;
-        }
-        .footer h1 {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-weight: 400;
-            font-size: clamp(1.8rem, 4.5vh, 2.5rem);
-            color: #ffffff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-            letter-spacing: 0.05em;
-        }
-        .footer .divider { margin-top: 1vh; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .card { padding: 1vh 2vw; min-width: 20vw; border-radius: 8px; }
-            .dot-separator { font-size: 1.2rem; margin: 0 -2px; }
-            .bear { right: 20%; bottom: 10%; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        
-        <!-- ESTRELLAS -->
-        <div id="stars"></div>
-
-        <!-- HEADER (Texto superior) -->
-        <div class="header-section">
-            <div class="messages" id="messages">
-                <div class="msg-text active">Sos mi <span class="gold">casualidad favorita</span>.</div>
-                <div class="msg-text">Mi lugar favorito es <span class="gold">a tu lado</span>.</div>
-                <div class="msg-text">Contigo vale la pena <span class="gold">todo</span>.</div>
-                <div class="msg-text">Elegiría encontrarte <span class="gold">mil veces más</span>.</div>
-            </div>
-            <div class="divider">
-                <svg viewBox="0 0 32 29"><path d="M16 28.5C16 28.5 1 19.3 1 9.7C1 4.9 4.7 1 9.3 1C12.2 1 14.7 2.5 16 4.8C17.3 2.5 19.8 1 22.7 1C27.3 1 31 4.9 31 9.7C31 19.3 16 28.5 16 28.5Z"/></svg>
-            </div>
-        </div>
-
-        <!-- ÁRBOL Y OSITOS -->
-        <div class="tree-wrapper">
-            <div class="ground"></div>
-            <div class="tree" id="tree">
-                
-                <!-- TRONCO (Oscuro, sólido, con raíces y ramas finas) -->
-                <svg class="tree-svg" viewBox="0 0 100 110" preserveAspectRatio="xMidYMid meet">
-                    <!-- Tronco y raíces -->
-                    <path d="M 25 110 Q 40 100, 43 70 L 46 45 Q 46 25, 30 10 Q 42 20, 50 35 Q 58 20, 70 10 Q 54 25, 54 45 L 57 70 Q 60 100, 75 110 Z" />
-                    <!-- Ramas secundarias internas -->
-                    <path d="M 45 60 Q 35 45, 15 30" fill="none" stroke="#1a0b12" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M 55 60 Q 65 45, 85 30" fill="none" stroke="#1a0b12" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M 48 40 Q 40 25, 45 5" fill="none" stroke="#1a0b12" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M 52 40 Q 60 25, 55 5" fill="none" stroke="#1a0b12" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-
-                <!-- FOLLAJE -->
-                <div class="canopy" id="canopy"></div>
-
-                <!-- OSITOS -->
-                <div class="bear">
-                    <span>🐻‍❄️</span><span>🐻</span>
-                    <span class="heart-prop">❤️</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- CONTADOR Y NOMBRES -->
-        <div class="counter-section">
-            <div class="counter-label">
-                <span>♥</span> Nuestros caminos se cruzaron hace <span>♥</span>
-            </div>
-            
-            <div class="counter-cards">
-                <div class="card"><div class="number" id="days">00</div><div class="label">Días</div></div>
-                <div class="dot-separator">•</div>
-                <div class="card"><div class="number" id="hours">00</div><div class="label">Horas</div></div>
-                <div class="dot-separator">•</div>
-                <div class="card"><div class="number" id="minutes">00</div><div class="label">Minutos</div></div>
-                <div class="dot-separator">•</div>
-                <div class="card"><div class="number" id="seconds">00</div><div class="label">Segundos</div></div>
-            </div>
-            
-            <div class="footer">
-                <h1>Andrés &amp; Valeria</h1>
-                <div class="divider">
-                    <svg viewBox="0 0 32 29"><path d="M16 28.5C16 28.5 1 19.3 1 9.7C1 4.9 4.7 1 9.3 1C12.2 1 14.7 2.5 16 4.8C17.3 2.5 19.8 1 22.7 1C27.3 1 31 4.9 31 9.7C31 19.3 16 28.5 16 28.5Z"/></svg>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        /* ===== STREAMING_CHUNK: Estrellas ===== */
-        (function createStars() {
-            const container = document.getElementById('stars');
-            const count = 120;
-            for (let i = 0; i < count; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 2.5;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
-                star.style.setProperty('--del', (Math.random() * 5) + 's');
-                container.appendChild(star);
-            }
-        })();
-
-        /* ===== STREAMING_CHUNK: Mensajes Rotativos ===== */
-        (function messages() {
-            const msgs = document.querySelectorAll('.msg-text');
-            let idx = 0;
-            setInterval(() => {
-                const current = msgs[idx];
-                current.classList.remove('active');
-                current.classList.add('fade-out');
-                setTimeout(() => {
-                    current.classList.remove('fade-out');
-                    idx = (idx + 1) % msgs.length;
-                    msgs.forEach((el, i) => {
-                        el.classList.toggle('active', i === idx);
-                    });
-                }, 800);
-            }, 4000);
-        })();
-
-        /* ===== STREAMING_CHUNK: Árbol (Follaje hiper-denso tipo imagen) ===== */
-        (function buildCanopy() {
-            const canopy = document.getElementById('canopy');
-            // Mucha densidad para imitar la foto
-            const total = 420; 
-            // Paleta de la imagen: rosas intensos, magentas, púrpuras, naranjas claros
-            const colors = [
-                '#ff4d85', '#ff759f', '#ff94ba', '#ffb3c1', 
-                '#d8315b', '#e63946', '#c77dff', '#9d4edd', 
-                '#ffb703', '#fb8500', '#ff006e'
-            ];
-
-            function heartX(t) { return 16 * Math.pow(Math.sin(t), 3); }
-            function heartY(t) { return 14 * Math.cos(t) - 6 * Math.cos(2 * t) - 2.5 * Math.cos(3 * t) - Math.cos(4 * t); }
-
-            let maxR = 0;
-            const points = [];
-            for (let i = 0; i < 360; i++) {
-                const t = (i / 360) * 2 * Math.PI;
-                const x = heartX(t);
-                const y = heartY(t);
-                const r = Math.sqrt(x*x + y*y);
-                if (r > maxR) maxR = r;
-                points.push({ x, y });
-            }
-
-            function createHeartSVG(color) {
-                const svgNS = 'http://www.w3.org/2000/svg';
-                const svg = document.createElementNS(svgNS, 'svg');
-                svg.setAttribute('viewBox', '0 0 32 29');
-                const path = document.createElementNS(svgNS, 'path');
-                path.setAttribute('d', 'M16 28.5C16 28.5 1 19.3 1 9.7C1 4.9 4.7 1 9.3 1C12.2 1 14.7 2.5 16 4.8C17.3 2.5 19.8 1 22.7 1C27.3 1 31 4.9 31 9.7C31 19.3 16 28.5 16 28.5Z');
-                path.setAttribute('fill', color);
-                // Bordes brillantes
-                path.setAttribute('stroke', 'rgba(255,255,255,0.3)');
-                path.setAttribute('stroke-width', '0.5');
-                svg.appendChild(path);
-                return svg;
-            }
-
-            for (let i = 0; i < total; i++) {
-                const base = points[Math.floor(Math.random() * points.length)];
-                const k = Math.pow(Math.random(), 0.5); 
-                const x = base.x * k + (Math.random() - 0.5) * 1.5;
-                const y = base.y * k + (Math.random() - 0.5) * 1.5;
-
-                const leftPct = 50 + (x / maxR) * 48;
-                const topPct = 45 - (y / maxR) * 45; 
-
-                const size = 12 + Math.random() * 15;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-
-                const div = document.createElement('div');
-                div.className = 'heart-leaf';
-                div.style.left = leftPct + '%';
-                div.style.top = topPct + '%';
-                div.style.width = size + 'px';
-                div.style.height = size + 'px';
-                
-                // Rotación aleatoria para que se vean dispersos
-                div.style.transform = `translate(-50%, -50%) rotate(${(Math.random()-0.5)*60}deg)`;
-
-                const inner = document.createElement('div');
-                inner.className = 'heart-inner';
-                inner.style.setProperty('--breath-dur', (3 + Math.random() * 3) + 's');
-                inner.style.setProperty('--breath-del', (Math.random() * 2) + 's');
-
-                inner.appendChild(createHeartSVG(color));
-                div.appendChild(inner);
-                canopy.appendChild(div);
-            }
-        })();
-
-        /* ===== STREAMING_CHUNK: Contador ===== */
-        (function counter() {
-            // VERIFICADO: El mes en Javascript es base 0.
-            // 2026, 1, 15 => 15 de Febrero de 2026.
-            const startDate = new Date(2026, 1, 15, 0, 0, 0);
-            
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-
-            function pad(n) { return String(n).padStart(2, '0'); }
-
-            function update() {
-                const now = new Date();
-                const diff = now - startDate;
-                
-                // Si la fecha actual es anterior al 15 feb 2026, mostrará 00
-                if (diff < 0) {
-                    daysEl.textContent = '00';
-                    hoursEl.textContent = '00';
-                    minutesEl.textContent = '00';
-                    secondsEl.textContent = '00';
-                    return;
-                }
-                
-                const totalSec = Math.floor(diff / 1000);
-                const days = Math.floor(totalSec / 86400);
-                const hours = Math.floor((totalSec % 86400) / 3600);
-                const mins = Math.floor((totalSec % 3600) / 60);
-                const secs = totalSec % 60;
-                
-                daysEl.textContent = days; // Los días no necesitan 0 a la izquierda si son muchos
-                hoursEl.textContent = pad(hours);
-                minutesEl.textContent = pad(mins);
-                secondsEl.textContent = pad(secs);
-            }
-            update();
-            setInterval(update, 1000);
-        })();
-    </script>
-</body>
-</html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Andrés ❤️ Valeria</title>
     <style>
-        /* ===== RESET Y BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -565,10 +16,30 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Georgia', 'Times New Roman', serif;
-            background: radial-gradient(ellipse at center, #3a1f4a 0%, #170f26 100%);
+            /* Fondo nocturno morado -> indigo casi negro */
+            background: radial-gradient(ellipse at 50% 30%, #3a1f4a 0%, #170f26 70%);
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        #stars{
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .star{
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            animation-name: twinkle;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+        @keyframes twinkle{
+            0%,100%{ opacity:.15; }
+            50%{ opacity:.9; }
         }
 
         .container {
@@ -586,63 +57,6 @@
             z-index: 1;
         }
 
-        /* ===== ESTRELLAS ===== */
-        #stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
-            animation-delay: var(--del, 0s);
-            will-change: opacity;
-        }
-        @keyframes twinkle {
-            0% {
-                opacity: 0.1;
-            }
-            100% {
-                opacity: 0.8;
-            }
-        }
-
-        /* ===== LUNA ===== */
-        #moon {
-            position: absolute;
-            top: 5%;
-            right: 8%;
-            width: 8vw;
-            height: 8vw;
-            max-width: 70px;
-            max-height: 70px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fef9d7, #f5e6a3);
-            box-shadow: 0 0 40px rgba(245, 230, 163, 0.4);
-            z-index: 0;
-            opacity: 0.9;
-            pointer-events: none;
-        }
-        #moon::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 25%;
-            height: 25%;
-            border-radius: 50%;
-            background: rgba(200, 180, 130, 0.2);
-            box-shadow: 20px 10px 0 rgba(200, 180, 130, 0.15);
-        }
-
-        /* ===== MENSAJES ===== */
         .messages {
             position: relative;
             z-index: 10;
@@ -658,12 +72,11 @@
         .msg-text {
             font-size: clamp(2.6vw, 3.8vh, 5vw);
             font-weight: 500;
-            color: #f2e6f0;
+            color: #f3e9f4;
             letter-spacing: 0.02em;
             line-height: 1.3;
             transition: opacity 0.8s ease;
             opacity: 0;
-            text-shadow: 0 0 30px rgba(231, 180, 99, 0.15);
             word-break: break-word;
             position: absolute;
             width: 90%;
@@ -679,7 +92,6 @@
             opacity: 0;
         }
 
-        /* ===== ÁRBOL ===== */
         .tree-wrapper {
             position: relative;
             flex: 1 1 auto;
@@ -700,41 +112,37 @@
             justify-content: center;
         }
 
-        /* TRONCO Y RAMAS (SVG ORGÁNICO) */
         .tree-svg {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* Ramas detrás de las hojas */
-            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
-            animation: sway 6.5s ease-in-out infinite;
+            z-index: 1;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+            animation: sway 9s ease-in-out infinite;
             transform-origin: bottom center;
         }
         @keyframes sway {
             0%, 100% {
-                transform: rotate(-1.2deg);
+                transform: rotate(-0.8deg);
             }
             50% {
-                transform: rotate(1.2deg);
+                transform: rotate(0.8deg);
             }
         }
         .tree-svg path {
-            fill: none;
-            stroke: #5a3a22;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
-        /* ===== COPA (corazones por encima de las ramas) ===== */
         .canopy {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2; /* Hojas por encima de las ramas */
+            z-index: 2;
             pointer-events: none;
             overflow: visible;
         }
@@ -747,7 +155,7 @@
         }
         .heart-leaf .heart-inner {
             display: block;
-            animation: breathe var(--breath-dur, 5s) ease-in-out infinite alternate;
+            animation: breathe var(--breath-dur, 8s) ease-in-out infinite alternate;
             animation-delay: var(--breath-del, 0s);
             transform-origin: center center;
         }
@@ -756,18 +164,17 @@
             width: 100%;
             height: 100%;
             overflow: visible;
-            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
         }
         @keyframes breathe {
             0% {
-                transform: translateY(-3px) rotate(-4deg) scale(0.95);
+                transform: translateY(-1.2px) rotate(-1.5deg) scale(0.98);
             }
             100% {
-                transform: translateY(3px) rotate(4deg) scale(1.08);
+                transform: translateY(1.2px) rotate(1.5deg) scale(1.02);
             }
         }
 
-        /* ===== CORAZONES CAYENDO ===== */
         .falling-heart {
             position: fixed;
             z-index: 20;
@@ -782,47 +189,40 @@
             width: 100%;
             height: 100%;
             overflow: visible;
-            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
         }
 
-        /* ===== OSITO ===== */
         .bear {
             position: absolute;
-            bottom: 5%;
+            bottom: 4%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 6;
-            font-size: clamp(5.5vw, 7vh, 9vw);
             display: flex;
-            align-items: center;
-            gap: 0.4vw;
-            animation: bear-breathe 3.8s ease-in-out infinite alternate;
-            filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4));
-            text-shadow: 0 2px 15px rgba(255, 255, 255, 0.08);
+            align-items: flex-end;
+            justify-content: center;
+            animation: bear-breathe 5s ease-in-out infinite alternate;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
             pointer-events: none;
         }
-        .bear .bear-heart {
-            font-size: 0.7em;
-            animation: heart-pulse 1.6s ease-in-out infinite;
+        .bear svg {
+            width: clamp(78px, 22vw, 150px);
+            height: auto;
+            display: block;
         }
         @keyframes bear-breathe {
-            0% {
-                transform: translateX(-50%) scale(0.96);
-            }
-            100% {
-                transform: translateX(-50%) scale(1.04);
-            }
+            0% { transform: translateX(-50%) scale(0.98); }
+            100% { transform: translateX(-50%) scale(1.02); }
+        }
+        .bear .held-heart {
+            animation: heart-pulse 2.4s ease-in-out infinite;
+            transform-origin: center center;
         }
         @keyframes heart-pulse {
-            0%, 100% {
-                transform: scale(0.85);
-            }
-            50% {
-                transform: scale(1.2);
-            }
+            0%, 100% { transform: scale(0.94); }
+            50% { transform: scale(1.08); }
         }
 
-        /* ===== CONTADOR ===== */
         .counter {
             position: relative;
             z-index: 10;
@@ -841,7 +241,6 @@
             color: #e7b463;
             font-weight: 500;
             letter-spacing: 0.06em;
-            text-shadow: 0 0 25px rgba(231, 180, 99, 0.2);
             text-align: center;
         }
         .counter-cards {
@@ -854,32 +253,30 @@
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(231, 180, 99, 0.25);
             border-radius: clamp(10px, 2vh, 20px);
             padding: 0.4vh 1.2vw;
             min-width: 12vw;
             text-align: center;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
         }
         .card .number {
             font-family: 'Courier New', monospace;
             font-size: clamp(4.2vw, 5.2vh, 7vw);
             font-weight: 700;
-            color: #f2e6f0;
+            color: #f3e9f4;
             letter-spacing: 0.02em;
             line-height: 1.1;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.06);
         }
         .card .label {
             font-size: clamp(1.6vw, 1.6vh, 2.4vw);
-            color: rgba(255, 255, 255, 0.55);
+            color: #d9c2b0;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-top: 0.2vh;
             font-family: 'Segoe UI', sans-serif;
         }
 
-        /* ===== FIRMA ===== */
         .footer {
             position: relative;
             z-index: 10;
@@ -894,77 +291,38 @@
             font-family: 'Georgia', 'Times New Roman', serif;
             font-style: italic;
             font-size: clamp(2.4vw, 3vh, 4vw);
-            color: rgba(255, 255, 255, 0.8);
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+            color: #e7b463;
             letter-spacing: 0.12em;
         }
 
-        /* ===== RESPONSIVE ===== */
+        @media (prefers-reduced-motion: reduce) {
+            .tree-svg, .heart-leaf .heart-inner, .bear, .star { animation: none !important; }
+        }
+
         @media (max-width: 480px) {
-            .container {
-                padding: 0.8vh 2vw 0.4vh 2vw;
-            }
-            .messages {
-                min-height: 7vh;
-            }
-            .msg-text {
-                font-size: clamp(3vw, 3.2vh, 4.5vw);
-            }
-            .tree {
-                width: min(82vw, 70vh);
-                aspect-ratio: 1 / 1.25;
-            }
-            .counter {
-                min-height: 13vh;
-            }
-            .card {
-                padding: 0.3vh 1.5vw;
-                min-width: 14vw;
-            }
-            .card .number {
-                font-size: clamp(4.8vw, 4.8vh, 6.8vw);
-            }
-            .card .label {
-                font-size: clamp(1.8vw, 1.4vh, 2.2vw);
-            }
-            .bear {
-                font-size: clamp(6vw, 8vh, 11vw);
-                bottom: 3%;
-            }
-            .footer span {
-                font-size: clamp(2.8vw, 2.6vh, 4.2vw);
-            }
-            #moon {
-                width: 10vw;
-                height: 10vw;
-                top: 3%;
-                right: 5%;
-            }
+            .container { padding: 0.8vh 2vw 0.4vh 2vw; }
+            .messages { min-height: 7vh; }
+            .msg-text { font-size: clamp(3.5vw, 3.2vh, 4.5vw); }
+            .tree { width: min(85vw, 70vh); aspect-ratio: 1 / 1.25; }
+            .counter { min-height: 13vh; }
+            .card { padding: 0.3vh 1.5vw; min-width: 14vw; }
+            .card .number { font-size: clamp(4.8vw, 4.8vh, 6.8vw); }
+            .card .label { font-size: clamp(1.8vw, 1.4vh, 2.2vw); }
+            .bear svg { width: clamp(70px, 26vw, 140px); }
+            .footer span { font-size: clamp(2.8vw, 2.6vh, 4.2vw); }
         }
         @media (max-width: 380px) {
-            .counter-cards {
-                gap: 1.2vw;
-            }
-            .card {
-                min-width: 16vw;
-                padding: 0.2vh 0.8vw;
-            }
-            .card .number {
-                font-size: clamp(5vw, 4.2vh, 6.2vw);
-            }
+            .counter-cards { gap: 1.2vw; }
+            .card { min-width: 16vw; padding: 0.2vh 0.8vw; }
+            .card .number { font-size: clamp(5vw, 4.2vh, 6.2vw); }
         }
     </style>
 </head>
 <body>
 
+    <div id="stars"></div>
+
     <div class="container">
-
-        <!-- ESTRELLAS -->
-        <div id="stars"></div>
-
-        <!-- LUNA -->
-        <div id="moon"></div>
-
         <!-- MENSAJES -->
         <div class="messages" id="messages">
             <div class="msg-text active" id="msg0">Cada día contigo vale la pena.</div>
@@ -979,45 +337,66 @@
         <div class="tree-wrapper">
             <div class="tree" id="tree">
 
-                <!-- TRONCO Y RAMAS ORGÁNICAS Y NATURALES -->
                 <svg class="tree-svg" viewBox="0 0 100 120" preserveAspectRatio="xMidYMid meet">
-                    <!-- Tronco base -->
-                    <path d="M 44 120 Q 47 90, 48 70 L 52 70 Q 53 90, 56 120 Z" fill="#4a2e1b" stroke="none" />
-                    <path d="M 45 120 Q 48 95, 49 70 Q 51 95, 55 120" stroke="#321e11" stroke-width="1.5" />
+                    <path d="M 42 120 Q 45 90, 48 70 L 52 70 Q 55 90, 58 120 Z" fill="#5a3a22" stroke="none" />
+                    <path d="M 44 120 Q 47 95, 49 70 Q 51 95, 56 120" stroke="#412918" stroke-width="1.2" fill="none" />
 
-                    <!-- Ramificación Principal Izquierda -->
-                    <path d="M 49 75 Q 42 60, 32 46 Q 24 35, 18 26" stroke-width="3.2" />
-                    <path d="M 32 46 Q 25 40, 15 35" stroke-width="2.0" />
-                    <path d="M 24 35 Q 20 28, 12 22" stroke-width="1.2" />
-                    <path d="M 18 26 Q 16 20, 14 15" stroke-width="0.8" />
+                    <path d="M 49 75 Q 42 60, 32 46 Q 24 35, 18 26" stroke="#5a3a22" stroke-width="3.2" fill="none" />
+                    <path d="M 32 46 Q 25 40, 15 35" stroke="#5a3a22" stroke-width="2.0" fill="none" />
+                    <path d="M 24 35 Q 20 28, 12 22" stroke="#5a3a22" stroke-width="1.2" fill="none" />
+                    <path d="M 18 26 Q 16 20, 14 15" stroke="#5a3a22" stroke-width="0.7" fill="none" />
 
-                    <!-- Ramificación Principal Derecha -->
-                    <path d="M 51 75 Q 58 60, 68 46 Q 76 35, 82 26" stroke-width="3.2" />
-                    <path d="M 68 46 Q 75 40, 85 35" stroke-width="2.0" />
-                    <path d="M 76 35 Q 80 28, 88 22" stroke-width="1.2" />
-                    <path d="M 82 26 Q 84 20, 86 15" stroke-width="0.8" />
+                    <path d="M 51 75 Q 58 60, 68 46 Q 76 35, 82 26" stroke="#5a3a22" stroke-width="3.2" fill="none" />
+                    <path d="M 68 46 Q 75 40, 85 35" stroke="#5a3a22" stroke-width="2.0" fill="none" />
+                    <path d="M 76 35 Q 80 28, 88 22" stroke="#5a3a22" stroke-width="1.2" fill="none" />
+                    <path d="M 82 26 Q 84 20, 86 15" stroke="#5a3a22" stroke-width="0.7" fill="none" />
 
-                    <!-- Ramas Centrales y Superiores -->
-                    <path d="M 50 70 Q 49 52, 43 38 Q 38 28, 34 20" stroke-width="2.6" />
-                    <path d="M 50 70 Q 51 52, 57 38 Q 62 28, 66 20" stroke-width="2.6" />
-                    <path d="M 43 38 Q 48 28, 50 18" stroke-width="1.4" />
-                    <path d="M 57 38 Q 52 28, 50 18" stroke-width="1.4" />
-                    <path d="M 43 38 Q 36 30, 28 24" stroke-width="1.2" />
-                    <path d="M 57 38 Q 64 30, 72 24" stroke-width="1.2" />
-                    
-                    <!-- Pequeñas ramitas finas que se extienden suavemente en el follaje -->
-                    <path d="M 34 20 Q 32 15, 30 11" stroke-width="0.6" />
-                    <path d="M 66 20 Q 68 15, 70 11" stroke-width="0.6" />
-                    <path d="M 50 18 Q 50 12, 50 8" stroke-width="0.6" />
+                    <path d="M 50 70 Q 49 52, 43 38 Q 38 28, 34 20" stroke="#5a3a22" stroke-width="2.6" fill="none" />
+                    <path d="M 50 70 Q 51 52, 57 38 Q 62 28, 66 20" stroke="#5a3a22" stroke-width="2.6" fill="none" />
+
+                    <path d="M 43 38 Q 48 28, 50 18" stroke="#5a3a22" stroke-width="1.4" fill="none" />
+                    <path d="M 57 38 Q 52 28, 50 18" stroke="#5a3a22" stroke-width="1.4" fill="none" />
+
+                    <path d="M 43 38 Q 36 30, 28 24" stroke="#5a3a22" stroke-width="1.2" fill="none" />
+                    <path d="M 57 38 Q 64 30, 72 24" stroke="#5a3a22" stroke-width="1.2" fill="none" />
+
+                    <path d="M 34 20 Q 32 15, 30 11" stroke="#5a3a22" stroke-width="0.5" fill="none" />
+                    <path d="M 66 20 Q 68 15, 70 11" stroke="#5a3a22" stroke-width="0.5" fill="none" />
+                    <path d="M 50 18 Q 50 12, 50 8" stroke="#5a3a22" stroke-width="0.5" fill="none" />
                 </svg>
 
-                <!-- COPA (corazones) -->
                 <div class="canopy" id="canopy"></div>
 
-                <!-- OSITO -->
+                <!-- OSITOS ABRAZADOS -->
                 <div class="bear" id="bear">
-                    <span>🧸</span>
-                    <span class="bear-heart">❤️</span>
+                    <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Oso marrón (derecha) -->
+                        <g>
+                            <ellipse cx="128" cy="100" rx="42" ry="28" fill="#a9713f"/>
+                            <circle cx="150" cy="55" r="30" fill="#a9713f"/>
+                            <circle cx="128" cy="32" r="10" fill="#a9713f"/>
+                            <circle cx="172" cy="32" r="10" fill="#8a5a30"/>
+                            <ellipse cx="150" cy="62" rx="15" ry="12" fill="#e3b487"/>
+                            <circle cx="141" cy="50" r="3.4" fill="#3a2415"/>
+                            <circle cx="161" cy="50" r="3.4" fill="#3a2415"/>
+                            <ellipse cx="150" cy="60" rx="4" ry="3" fill="#3a2415"/>
+                            <path d="M96 108 Q92 118, 100 122" stroke="#8a5a30" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <!-- Oso blanco (izquierda) -->
+                        <g>
+                            <ellipse cx="72" cy="100" rx="42" ry="28" fill="#f4ede3"/>
+                            <circle cx="50" cy="55" r="30" fill="#f4ede3"/>
+                            <circle cx="28" cy="32" r="10" fill="#dfd3c2"/>
+                            <circle cx="72" cy="32" r="10" fill="#f4ede3"/>
+                            <ellipse cx="50" cy="62" rx="15" ry="12" fill="#fffaf3"/>
+                            <circle cx="41" cy="50" r="3.4" fill="#3a2415"/>
+                            <circle cx="61" cy="50" r="3.4" fill="#3a2415"/>
+                            <ellipse cx="50" cy="60" rx="4" ry="3" fill="#c98a8a"/>
+                            <path d="M104 108 Q108 118, 100 122" stroke="#dfd3c2" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <!-- Corazon que sostienen entre ambos -->
+                        <path class="held-heart" d="M100 108 C94 100, 82 100, 82 111 C82 120, 100 128, 100 128 C100 128, 118 120, 118 111 C118 100, 106 100, 100 108 Z" fill="#ff4d6d" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+                    </svg>
                 </div>
             </div>
         </div>
@@ -1041,31 +420,27 @@
 
     <script>
         // ================================================================
-        // 1. ESTRELLAS
+        // 0. ESTRELLAS DE FONDO
         // ================================================================
-        (function createStars() {
+        (function buildStars() {
             const container = document.getElementById('stars');
-            const count = 100 + Math.floor(Math.random() * 21);
+            const count = 60;
             for (let i = 0; i < count; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = 1 + Math.random() * 3;
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                const dur = 2 + Math.random() * 4;
-                const del = Math.random() * 5;
-                star.style.cssText = `
-                    width:${size}px; height:${size}px;
-                    left:${x}%; top:${y}%;
-                    --dur:${dur}s;
-                    --del:${del}s;
-                `;
-                container.appendChild(star);
+                const s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = (Math.random() * 100) + '%';
+                s.style.top = (Math.random() * 100) + '%';
+                const size = 1 + Math.random() * 2;
+                s.style.width = size + 'px';
+                s.style.height = size + 'px';
+                s.style.animationDelay = (Math.random() * 4) + 's';
+                s.style.animationDuration = (2 + Math.random() * 3) + 's';
+                container.appendChild(s);
             }
         })();
 
         // ================================================================
-        // 2. MENSAJES ROTATIVOS
+        // 1. MENSAJES ROTATIVOS
         // ================================================================
         (function messages() {
             const msgs = document.querySelectorAll('.msg-text');
@@ -1104,24 +479,22 @@
         })();
 
         // ================================================================
-        // 3. ÁRBOL DE CORAZONES (Silueta Acentuada e Inscrita en Círculo)
+        // 2. ÁRBOL DE CORAZONES (Inscrito en Círculo Límite)
         // ================================================================
         (function buildCanopy() {
             const canopy = document.getElementById('canopy');
-            const total = 280 + Math.floor(Math.random() * 40); // 280-320
+            const total = 280 + Math.floor(Math.random() * 40);
             const colors = [
                 '#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1',
                 '#c77dff', '#b5179e', '#f4a261', '#f6bd60',
                 '#e65c65', '#f19066', '#fd79a8'
             ];
 
-            // Ecuación paramétrica de corazón con muesca superior e inferior muy acentuada
             function heartX(t) { return 16 * Math.pow(Math.sin(t), 3); }
             function heartY(t) {
                 return 14 * Math.cos(t) - 6 * Math.cos(2 * t) - 2.5 * Math.cos(3 * t) - Math.cos(4 * t);
             }
 
-            // Calcular radio máximo para inscribir la geometría exactamente dentro de un Círculo Virtual Limite
             let maxR = 0;
             const steps = 360;
             const borderPoints = [];
@@ -1130,7 +503,7 @@
                 const x = heartX(t);
                 const y = heartY(t);
                 const r = Math.sqrt(x * x + y * y);
-                if (r > maxR) maxR = r; // Determina el radio límite del círculo contenedor
+                if (r > maxR) maxR = r;
                 borderPoints.push({ x, y, t });
             }
 
@@ -1149,16 +522,12 @@
                 return svg;
             }
 
-            // Generación y Relleno
             for (let i = 0; i < total; i++) {
                 const base = borderPoints[Math.floor(Math.random() * borderPoints.length)];
-                // k normalizado para concentrar densidad interior y definir bordes
-                const k = Math.pow(Math.random(), 0.4); 
+                const k = Math.pow(Math.random(), 0.4);
                 let x = base.x * k + (Math.random() - 0.5) * 0.8;
                 let y = base.y * k + (Math.random() - 0.5) * 0.8;
 
-                // Escalar puntos normalizados respecto a maxR (inscritos en circulo unitario)
-                // Posicionar relativo al contenedor (Center X: 50%, Center Y: 35%)
                 const leftPct = 50 + (x / maxR) * 42;
                 const topPct = 35 - (y / maxR) * 38;
 
@@ -1175,7 +544,39 @@
 
                 const inner = document.createElement('div');
                 inner.className = 'heart-inner';
-                const breathDur = 3.2 + Math.random() * 3.5;
+                const breathDur = 6 + Math.random() * 5;
+                const breathDel = Math.random() * 3;
+                inner.style.setProperty('--breath-dur', breathDur + 's');
+                inner.style.setProperty('--breath-del', breathDel + 's');
+
+                const svg = createHeartSVG(size, color);
+                inner.appendChild(svg);
+                div.appendChild(inner);
+                canopy.appendChild(div);
+            }
+
+            for (let i = 0; i < 60; i++) {
+                const t = (i / 60) * 2 * Math.PI;
+                let x = heartX(t) * (0.96 + Math.random() * 0.08);
+                let y = heartY(t) * (0.96 + Math.random() * 0.08);
+
+                const leftPct = 50 + (x / maxR) * 42;
+                const topPct = 35 - (y / maxR) * 38;
+
+                const size = 10 + Math.random() * 12;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                const div = document.createElement('div');
+                div.className = 'heart-leaf';
+                div.style.left = leftPct + '%';
+                div.style.top = topPct + '%';
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+                div.style.transform = `translate(-50%, -50%) rotate(${(Math.random()-0.5)*30}deg)`;
+
+                const inner = document.createElement('div');
+                inner.className = 'heart-inner';
+                const breathDur = 6 + Math.random() * 4;
                 const breathDel = Math.random() * 2.5;
                 inner.style.setProperty('--breath-dur', breathDur + 's');
                 inner.style.setProperty('--breath-del', breathDel + 's');
@@ -1185,43 +586,10 @@
                 div.appendChild(inner);
                 canopy.appendChild(div);
             }
-
-            // Refuerzo en el perímetro exterior para marcar nítidamente la silueta de corazón
-            for (let i = 0; i < 60; i++) {
-                const t = (i / 60) * 2 * Math.PI;
-                let x = heartX(t) * (0.96 + Math.random() * 0.08);
-                let y = heartY(t) * (0.96 + Math.random() * 0.08);
-                
-                const leftPct = 50 + (x / maxR) * 42;
-                const topPct = 35 - (y / maxR) * 38;
-                
-                const size = 10 + Math.random() * 12;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                const div = document.createElement('div');
-                div.className = 'heart-leaf';
-                div.style.left = leftPct + '%';
-                div.style.top = topPct + '%';
-                div.style.width = size + 'px';
-                div.style.height = size + 'px';
-                div.style.transform = `translate(-50%, -50%) rotate(${(Math.random()-0.5)*30}deg)`;
-                
-                const inner = document.createElement('div');
-                inner.className = 'heart-inner';
-                const breathDur = 3.0 + Math.random() * 3.0;
-                const breathDel = Math.random() * 2.0;
-                inner.style.setProperty('--breath-dur', breathDur + 's');
-                inner.style.setProperty('--breath-del', breathDel + 's');
-                
-                const svg = createHeartSVG(size, color);
-                inner.appendChild(svg);
-                div.appendChild(inner);
-                canopy.appendChild(div);
-            }
         })();
 
         // ================================================================
-        // 4. CORAZONES CAYENDO
+        // 3. CORAZONES CAYENDO
         // ================================================================
         (function fallingHearts() {
             const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1', '#c77dff', '#b5179e', '#f4a261', '#f6bd60'];
@@ -1263,7 +631,7 @@
                 let y = -size;
                 let rotation = rot;
                 let phase = Math.random() * 100;
-                const speed = 0.6 + Math.random() * 0.9;
+                const speed = 0.5 + Math.random() * 0.7;
                 const wobble = 1.0 + Math.random() * 2.5;
                 const freq = 0.02 + Math.random() * 0.03;
                 const maxY = window.innerHeight + size + 30;
@@ -1274,9 +642,9 @@
 
                 function animate() {
                     if (!state.alive) return;
-                    state.y += state.speed * 1.3;
+                    state.y += state.speed * 1.1;
                     state.phase += state.freq;
-                    state.rotation += 0.3 + Math.random() * 0.2;
+                    state.rotation += 0.2 + Math.random() * 0.15;
                     const wobX = Math.sin(state.phase) * state.wobble;
                     const xPos = state.startX + wobX;
                     state.el.style.top = state.y + 'px';
@@ -1305,10 +673,11 @@
         })();
 
         // ================================================================
-        // 5. CONTADOR
+        // 4. CONTADOR
         // ================================================================
         (function counter() {
             const startDate = new Date(2026, 1, 15, 0, 0, 0);
+
             const daysEl = document.getElementById('days');
             const hoursEl = document.getElementById('hours');
             const minutesEl = document.getElementById('minutes');
@@ -1331,6 +700,7 @@
                 const hours = Math.floor((totalSec % 86400) / 3600);
                 const mins = Math.floor((totalSec % 3600) / 60);
                 const secs = totalSec % 60;
+
                 daysEl.textContent = pad(days);
                 hoursEl.textContent = pad(hours);
                 minutesEl.textContent = pad(mins);
